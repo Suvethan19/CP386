@@ -2,11 +2,16 @@
  ---------------------------------------------------------
  File: collatz_sequence.c
  Project: Assignment 2
- -------------------------------------
+ ---------------------------------------------------------
  Author:  Raeya Sangha and Suvethan Yogathasan
  ID:      169020312 and 169039244
  Email:   sang0312@mylaurier.ca and yoga9244@mylaurier.ca
  Version  2026-06-05
+ ---------------------------------------------------------
+ This prohgram reads number values from a file and generates
+ a Collatz sequence, stores the sequence in a shafred memory
+ space and uses a child process to display the results of the 
+ Collatz sequence.
  ---------------------------------------------------------
  */
 
@@ -34,13 +39,15 @@ int main(int argc, char *argv[])
     int current_number = 0;
     int building_number = 0;
     int index;
-
+    
+    /* Check if user provided the input file name*/
     if (argc != 2)
     {
         printf("Usage: ./collatz_sequence start_numbers.txt\n");
         return 1;
     }
-
+    
+    /* File with the numbers is opened in real only mode */
     fd = open(argv[1], O_RDONLY);
 
     if (fd == -1)
@@ -49,6 +56,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /* The numbers in the file are read and stored into the memory buffer */
     bytes_read = read(fd, buffer, sizeof(buffer));
 
     if (bytes_read == -1)
@@ -59,7 +67,9 @@ int main(int argc, char *argv[])
     }
 
     close(fd);
-
+    
+    /* Since read() reads raw characters, build each integer
+   from its digit characters before storing it */
     for (k = 0; k <= bytes_read; k++)
     {
         char c;
@@ -87,6 +97,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    /* From the input file one value is processed at a time */
     for (index = 0; index < num_count; index++)
     {
         int shm_fd;
@@ -99,6 +110,7 @@ int main(int argc, char *argv[])
 
         printf("Parent Process: The positive integer read from file is %d\n", collatz_num);
 
+        /* A shared memeory space is created for parent and child to use */
         shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
 
         if (shm_fd == -1)
@@ -107,6 +119,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        /* The space allocated for the shared memeory */
         if (ftruncate(shm_fd, SIZE) == -1)
         {
             printf("ftruncate failed.\n");
@@ -115,6 +128,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        /* Shared memory is connected so parent can write into it */
         shared_mem = mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
         if (shared_mem == (int *) MAP_FAILED)
@@ -125,6 +139,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        /* Store each value of Collatz sequence after it is generated */
         sequence_index = 0;
         shared_mem[sequence_index] = collatz_num;
         sequence_index++;
@@ -140,8 +155,10 @@ int main(int argc, char *argv[])
             sequence_index++;
         }
 
+        /* -1 means the end of the sequence */
         shared_mem[sequence_index] = -1;
 
+        /* Cild process is created */
         pid = fork();
 
         if (pid < 0)
@@ -159,6 +176,7 @@ int main(int argc, char *argv[])
             int *child_ptr;
             int print_index = 0;
 
+            /* The shatred memory is opened by child process */
             child_fd = shm_open(SHM_NAME, O_RDONLY, 0666);
 
             if (child_fd == -1)
@@ -167,6 +185,7 @@ int main(int argc, char *argv[])
                 return 1;
             }
 
+            /* Mommory is shated so child can read from it */
             child_ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, child_fd, 0);
 
             if (child_ptr == (int *) MAP_FAILED)
@@ -178,6 +197,7 @@ int main(int argc, char *argv[])
 
             printf("Child Process: The generated collatz sequence is ");
 
+            /* Child prints all the values until the ennd which is -1 */
             while (child_ptr[print_index] != -1)
             {
                 printf("%d", child_ptr[print_index]);
@@ -198,6 +218,7 @@ int main(int argc, char *argv[])
         }
         else
         {
+            /* Parent waits for child process to finish */
             wait(NULL);
 
             munmap(shared_mem, SIZE);
