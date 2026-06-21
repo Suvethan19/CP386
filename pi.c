@@ -83,29 +83,29 @@ int main(int argc, char *argv[])
     pthread_attr_t attr;
    
     
-/* Verifying that both required command line arguments were provided by the user */
+/* Verifying that both required command line arguments were provided by the user (eroor handing)*/
     if (argc != 3)
     {
-        printf("usage: pi <integer value for NUMBER_OF_DARTS> <integer value for NUMBER_OF_THREADS>\n");
-        return 1;
+       fprintf(stderr, "usage: pi <integer value for NUMBER_OF_DARTS> <integer value for NUMBER_OF_THREADS>\n");
+    return 1;
     }
 /* Convert command-line arguments into numeric values */
     number_of_threads = atoi(argv[2]);
     number_of_darts = atol(argv[1]);
     
 
-/*Assignment requirement: the number of darts must be at least 5000000 */
+/*Assignment requirement: the number of darts must be at least 5000000 (error handling)*/
     if (number_of_darts < 5000000)
     {
-        printf("The number of darts must be >= 5000000\n");
-        return 1;
+        fprintf(stderr, "The number of darts must be >= 5000000\n");
+    return 1;
     }
 
-    /* Assignment requirement: at least two threads must be used */
+    /* Assignment requirement: at least two threads must be used (error handing) */
     if (number_of_threads < 2)
     {
-        printf("The number of threads must be >= 2\n");
-        return 1;
+        fprintf(stderr, "The number of threads must be >= 2\n");
+    return 1;
     }
 
 /* Dynamically allocate memory for the thread IDs and for the number of darts assigned to each thread */
