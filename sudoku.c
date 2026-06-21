@@ -1,3 +1,15 @@
+/*
+ ---------------------------------------------------------
+ File: process_management.c
+ Project: Assignment 3
+ ---------------------------------------------------------
+ Author:  Raeya Sangha and Suvethan Yogathasan
+ ID:      169020312 and 169039244
+ Email:   sang0312@mylaurier.ca and yoga9244@mylaurier.ca
+ Version  2026-06-20
+ ---------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
