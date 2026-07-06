@@ -1,6 +1,6 @@
  /*
  ---------------------------------------------------------
- File Name: pi.c
+ File Name: thread_synchronization
  Project: Assignment 4 - Question 2
  ---------------------------------------------------------
  Authors:  Raeya Sangha and Suvethan Yogathasan
