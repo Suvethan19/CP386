@@ -1,6 +1,6 @@
 /*
  ---------------------------------------------------------
- File: process_management.c
+ File: sudoku.c
  Project: Assignment 3
  ---------------------------------------------------------
  Author:  Raeya Sangha and Suvethan Yogathasan
