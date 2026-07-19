@@ -163,6 +163,29 @@ int main(int argc, char *argv[])
 }
 
 
+
+// Sets every initial allocation to zero so each initial need equals the maximum demand.
+ 
+void initialize_values(void)
+{
+    int customer;
+    int resource_index;
+
+    for (customer = 0;
+         customer < NUMBER_OF_CUSTOMERS;
+         customer++)
+    {
+        for (resource_index = 0;
+             resource_index < NUMBER_OF_RESOURCES;
+             resource_index++)
+        {
+            allocation[customer][resource_index] = 0;
+            need[customer][resource_index] =
+                maximum[customer][resource_index];
+        }
+    }
+}
+
 // reads the maximum resource demand for each customer from sample_in_banker.txt.
 void read_file(void)
 {
@@ -193,49 +216,6 @@ void read_file(void)
 }
 
 
-// Sets every initial allocation to zero so each initial need equals the maximum demand.
- 
-void initialize_values(void)
-{
-    int customer;
-    int resource_index;
-
-    for (customer = 0;
-         customer < NUMBER_OF_CUSTOMERS;
-         customer++)
-    {
-        for (resource_index = 0;
-             resource_index < NUMBER_OF_RESOURCES;
-             resource_index++)
-        {
-            allocation[customer][resource_index] = 0;
-            need[customer][resource_index] =
-                maximum[customer][resource_index];
-        }
-    }
-}
-
-
-// print one row of resource values
-void print_vector(int vector[])
-{
-    int resource;
-
-    for (resource = 0;
-         resource < NUMBER_OF_RESOURCES;
-         resource++)
-    {
-        printf("%d", vector[resource]);
-
-        if (resource < NUMBER_OF_RESOURCES - 1)
-        {
-            printf(" ");
-        }
-    }
-
-    printf("\n");
-}
-
 
 // prints a matrix containing one row for each customer
  
@@ -264,21 +244,24 @@ void print_matrix(int matrix[][NUMBER_OF_RESOURCES])
     }
 }
 
-// prints the current state of all arrays and matrices
- 
-void print_status(void)
+// print one row of resource values
+void print_vector(int vector[])
 {
-    printf("Available Resources:\n");
-    print_vector(available);
+    int resource;
 
-    printf("Maximum Resources:\n");
-    print_matrix(maximum);
+    for (resource = 0;
+         resource < NUMBER_OF_RESOURCES;
+         resource++)
+    {
+        printf("%d", vector[resource]);
 
-    printf("Allocated Resources:\n");
-    print_matrix(allocation);
+        if (resource < NUMBER_OF_RESOURCES - 1)
+        {
+            printf(" ");
+        }
+    }
 
-    printf("Need Resources:\n");
-    print_matrix(need);
+    printf("\n");
 }
 
 
@@ -358,6 +341,22 @@ int safety_algorithm(void)
     return 1;
 }
 
+// prints the current state of all arrays and matrices
+ 
+void print_status(void)
+{
+    printf("Available Resources:\n");
+    print_vector(available);
+
+    printf("Maximum Resources:\n");
+    print_matrix(maximum);
+
+    printf("Allocated Resources:\n");
+    print_matrix(allocation);
+
+    printf("Need Resources:\n");
+    print_matrix(need);
+}
 
 //attempts to grant a customers resource request
  
